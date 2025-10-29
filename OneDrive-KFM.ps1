@@ -6,14 +6,14 @@ if ($Desktop -notlike "*Onedrive*") {
     write-host "successfully set the regkey to force the kfm"
 
     $filename = $env:username + ".txt"
-    $filepath = "c:\temp\OneDrive\kfm\open\" + $filename
+    $filepath = "\\rogo-file-01\Users Folders\OneDrive\kfm\open\" + $filename
     (get-date) | out-file $filepath -append -force
 }
 else {
     ## set a marker file that the kfm move is done
     $filename = $env:username + ".txt"
-    $filepath = "c:\temp\OneDrive\kfm\done\" + $filename
-    $oldfilename = "c:\temp\OneDrive\kfm\open\" + $filename
+    $filepath = "\\rogo-file-01\Users Folders\OneDrive\kfm\done\" + $filename
+    $oldfilename = "\\rogo-file-01\Users Folders\OneDrive\kfm\open\" + $filename
 
     if (test-path $oldfilename) { 
         remove-item -path $oldfilename -Force 
