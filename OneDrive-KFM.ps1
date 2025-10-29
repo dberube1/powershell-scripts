@@ -1,16 +1,19 @@
 $Desktop = (Get-ItemProperty -path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\User Shell Folders" -name "Desktop").Desktop
 
 if ($Desktop -notlike "*Onedrive*") {
-    ##configure 
-    kfmSet-ItemProperty -Path "HKCU:\Software\Microsoft\OneDrive\Accounts\Business1" -Name "KfmIsDoneSilentOptIn" -Value 0 -Force -type dwordwrite-host "successfully set the regkey to force the kfm"
+    ##configure kfm
+    Set-ItemProperty -Path "HKCU:\Software\Microsoft\OneDrive\Accounts\Business1" -Name "KfmIsDoneSilentOptIn" -Value 0 -Force -type dword
+    write-host "successfully set the regkey to force the kfm"
 
     $filename = $env:username + ".txt"
-    $filepath = "\\rogo-file-01\Users Folders\OneDrive\kfm\open\" + $filename(get-date) | out-file $filepath -append -force
+    $filepath = "c:\temp\OneDrive\kfm\open\" + $filename
+    (get-date) | out-file $filepath -append -force
 }
 else {
     ## set a marker file that the kfm move is done
     $filename = $env:username + ".txt"
-    $filepath = "\\rogo-file-01\Users Folders\OneDrive\kfm\done\" + $filename$oldfilename = "\\rogo-file-01\Users Folders\OneDrive\kfm\open\" + $filename
+    $filepath = "c:\temp\OneDrive\kfm\done\" + $filename
+    $oldfilename = "c:\temp\OneDrive\kfm\open\" + $filename
 
     if (test-path $oldfilename) { 
         remove-item -path $oldfilename -Force 
@@ -23,10 +26,13 @@ else {
     $allfoldertypes = @("desktop", "downloads", "dokumente", "documents")
     foreach ($singlefoldertype in $allfoldertypes) {
 
-        $folderpath = $env:OneDriveCommercial + "\$singlefoldertype"$allsubfolders = get-childitem $folderpathforeach($singlesubfolder in $allsubfolders)
+        $folderpath = $env:OneDriveCommercial + "\$singlefoldertype"
+        $allsubfolders = get-childitem $folderpath 
+        foreach($singlesubfolder in $allsubfolders)
         { $foldername = $singlesubfolder.name
             if ($foldername -eq "\$RECYCLE.BIN") { 
-                $foldername$foldername = $singlesubfolder.fullnameremove-item -path $foldername -force -recurse 
+                $foldername = $singlesubfolder.fullname
+                remove-item -path $foldername -force -recurse 
             }
         }
     }
